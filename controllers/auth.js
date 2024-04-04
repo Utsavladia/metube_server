@@ -7,6 +7,7 @@ import { mailBlockuser } from "../Helpers/mailBlockuser.js";
 export const login = async (req, res) => {
   console.log(req.body);
   const { email, password } = req.body;
+  console.log("email and password ", email, password);
   try {
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
@@ -48,8 +49,8 @@ export const login = async (req, res) => {
       );
       if (password) {
         const isblocked = await loginAttempt.findOne({ email });
-        console.log(isblocked?.blocked);
-        const onehour = 60 * 60 * 10000;
+        console.log("user is blocked ", isblocked?.blocked);
+        const onehour = 60 * 60 * 1000;
         const currentTime = Date.now();
         const timesinceblock = currentTime - isblocked?.blockTime;
         if (isblocked && isblocked?.blocked && timesinceblock < onehour) {
@@ -57,8 +58,9 @@ export const login = async (req, res) => {
             .status(404)
             .json({ message: "User is blocked for 1 hours" });
         } else {
+          console.log(isblocked?.blocked && timesinceblock >= onehour);
           if (isblocked?.blocked && timesinceblock >= onehour) {
-            await loginAttempt.findByIdAndDelete({ email });
+            await loginAttempt.findOneAndDelete({ email });
             console.log(
               "we hae deeleted the user after 1 hour form login attempt"
             );
