@@ -6,6 +6,7 @@ import userLiked from "../models/userLiked.js";
 import Comments from "../models/comments.js";
 
 export const uplaodVideo = async (req, res, next) => {
+  console.log("req on upload ", req.body);
   if (req.file === undefined) {
     res.status(404).json({ Message: "upload a .mp4 file only" });
   } else {
@@ -17,7 +18,7 @@ export const uplaodVideo = async (req, res, next) => {
         fileType: req.file.mimetype,
         fileSize: req.file.size,
         videoChanel: req.body.channel,
-        Uploder: req.body.uploder,
+        Uploder: req.body.uploader,
         access: req.body.access,
       });
       await file.save();

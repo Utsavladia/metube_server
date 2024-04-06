@@ -1,9 +1,32 @@
 import userLiked from "../models/userLiked.js";
 
+import Channels from "../models/channel.js";
+
 export const subscribe = async (req, res) => {
   const { userId, channelId } = req.body;
   console.log("we got the userId and channelId as", userId, channelId);
   try {
+    const channelfound = await Channels.findOne({ channelId });
+    const subsarray = channelfound?.subscribers || [];
+    const index = subsarray.indexOf(userId);
+    if (index !== -1) {
+      subsarray.splice(index, 1);
+    } else {
+      subsarray.push(userId);
+    }
+    if (channelfound) {
+      await Channels.findOneAndUpdate(
+        { channelId },
+        { subscribers: subsarray }
+      );
+    } else {
+      const newsubs = await Channels.create({
+        channelId: channelId,
+        subscribers: [userId],
+      });
+      await newsubs.save();
+    }
+
     const founduser = await userLiked.findOne({ userId });
     console.log("found user in userlinked ", founduser);
     if (founduser) {

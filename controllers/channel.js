@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "../models/auth.js";
+import Channels from "../models/channel.js";
 
 export const updateChannelData = async (req, res) => {
   const { id: _id } = req.params;
@@ -23,5 +24,15 @@ export const updateChannelData = async (req, res) => {
   } catch (error) {
     console.error("Erroe updating channel ", error);
     res.status(405).json({ message: error.message });
+  }
+};
+
+export const getallchannels = async (req, res) => {
+  console.log("we got the erquest ot get all chanenels ");
+  try {
+    const channels = await Channels.find();
+    res.status(200).send(channels);
+  } catch (error) {
+    res.status(404).send("errro getting alll watch laters", error.Message);
   }
 };
