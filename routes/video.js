@@ -14,6 +14,7 @@ import { getHistoryController } from "../controllers/historycontrol.js";
 import { subscribe } from "../controllers/subscribe.js";
 import { comment } from "../controllers/video.js";
 import { getAllComments } from "../controllers/video.js";
+import { deletevideo, changeaccess } from "../controllers/video.js";
 import { getallchannels } from "../controllers/channel.js";
 
 const routes = express.Router();
@@ -44,5 +45,9 @@ routes.post("/comment", auth, comment);
 routes.get("/getallcomments", getAllComments);
 
 routes.get("/getallchannels", getallchannels);
+
+routes.post("/deletevideo", deletevideo);
+
+routes.post("/changeaccess", changeaccess);
 
 export default routes;

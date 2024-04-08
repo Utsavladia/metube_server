@@ -24,8 +24,29 @@ export const uplaodVideo = async (req, res, next) => {
       await file.save();
       res.status(200).send("File uploaded successfully");
     } catch (error) {
-      rmSync.status(400).send(error.Message);
+      res.status(400).send(error.Message);
     }
+  }
+};
+export const deletevideo = async (req, res) => {
+  const { id } = req.body;
+  console.log(id);
+  try {
+    // Find the video by ID
+    const foundvideo = await VideoFiles.findById(id);
+    if (!foundvideo) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+
+    // Delete the video from the database
+    await foundvideo.deleteOne(); // Assuming VideoFiles is a Mongoose model
+
+    // Respond with success message
+    res.status(200).json({ message: "Video deleted successfully" });
+  } catch (error) {
+    // Handle errors
+    console.error("Error deleting video:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -56,6 +77,25 @@ export const viewController = async (req, res) => {
     res.status(200).json(updatedViews);
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const changeaccess = async (req, res) => {
+  try {
+    const { id, access } = req.body;
+    console.log("id and access in change access is ", id, access);
+    const foundVideo = await videoFiles.findById(id);
+
+    if (!foundVideo) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+
+    await videoFiles.findByIdAndUpdate(id, { access: access });
+
+    res.status(200).json({ message: "Access updated successfully" });
+  } catch (error) {
+    console.error("Error in changeaccess:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
